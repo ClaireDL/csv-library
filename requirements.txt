@@ -1,0 +1,25 @@
+Write a library to read csv files and loads them as a list of case classes.
+
+Do not use an existing library that reads csv files.
+You can simplify by making assumptions (e.g. locale: assume one, or consider every possible format).
+----------------------------------------------------------------------------------------------------
+
+Aspects to take into account
+1- CSV origin:
+- file name
+- file path
+
+2- Delimiter: assume only comma
+
+3- Quote characters: assume no quotes
+
+4- CSV data structure
+- Header/no header -> as per user instruction*
+- Header -> from file if header, but also possibly from a file, or from user typing input after prompt
+
+5- How to treat missing data (= empty cells in the CSV file)
+Use a default ("???", NULL) or from user instruction
+Maybe do an automatic copy of the original keeping the cells empty
+Give the option to drop incomplete lines/columns?
+
+* user instruction = optional parameter in the arguments of the library
