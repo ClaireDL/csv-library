@@ -12,7 +12,7 @@ case class DataOrganiser(file: String, delimiter: String = ",", header: Boolean 
   /**
   * Splits csv file into columns and lines, by line
   */
-  def split(): List[List[String]] = {
+  def split(): List[List[Any]] = {
     Source
       .fromFile(file)
       .getLines()
@@ -26,10 +26,10 @@ case class DataOrganiser(file: String, delimiter: String = ",", header: Boolean 
   /**
   * Takes the split csv file and returns a list of lists
   */
-  def generateOutput(splitString: Array[String], length: Int): List[String] = {
-    var output = new ListBuffer[String]()
+  def generateOutput(row: Array[String], length: Int): List[Any] = {
+    var output = new ListBuffer[Any]()
     for ( i <- 0 to (length - 1) ) {
-            output += splitString(i)
+      output += StringConverter.setType1(row(i))
     }
     val outputList = output.toList
     outputList

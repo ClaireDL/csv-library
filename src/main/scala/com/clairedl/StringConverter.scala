@@ -3,11 +3,32 @@ package com.clairedl.scala
 import scala.util.matching.Regex
 
 object StringConverter {
-  
-  def testType(s: String) = {
+  def setType2(s: Any) = {
+    /**
+    * Returns a boolean for strings with true or false 
+    * Returns a quoted string otherwise
+    */
+    def testString(s: Any) = {
+      val sLower = s.toString.trim().toLowerCase()
+      sLower match {
+        case "true" | "false" => sLower.toBoolean
+        case _                => s""" "$s" """.trim()
+      }
+    }
+    
+    s match {
+      case s: Int     => s.toInt
+      case s: Double  => s.toDouble
+      case s: Float   => s.toFloat
+      case s: Char    => s.toChar
+      case _          => testString(s)       
+    }
+  }
+
+  def setType1(s: String) = {
     isInt(s).orElse(isDouble(s)).orElse(isBoolean(s)) match {
       case Some(i)  => i
-      case None     => s
+      case None     => s""" "$s" """.trim
     }
   }
 
