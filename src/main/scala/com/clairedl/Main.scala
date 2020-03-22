@@ -8,11 +8,10 @@ object Main extends App {
     println(i)
   }
 
-  // tests functions of DataOrganiser
-  val test2 = DataOrganiser("User.csv", ",", false)
+  // tests functions of CsvInterpreter
+  println("Testing CsvInterpreter")
+  val test2 = CsvInterpreter("User.csv", ",", false)
   val loaded2 = test2.split()
-  
-  // println(loaded)
   for (i <- loaded2) {
     println(i)
   }
