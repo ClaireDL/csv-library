@@ -10,31 +10,20 @@ object Main extends App {
   //   println(i)
   // }
 
-  // tests functions of CsvInterpreter
-  // println("Testing CsvInterpreter")
-  // val test2 = CsvInterpreter("User.csv", ",", false)
-  // val loaded2 = test2.load()
-  // for (i <- loaded2) {
-  //   println(i)
-  // }
-
   println("Testing CSV interpreter functions")
   case class Plants(name: String, value: Double, alive: Boolean) extends CaseClass
   val example = Plants("myPlant", 2.50, true)
-  val test3 = CsvInterpreter("Plants.csv", example)
-  println(s"these are the parameters")
-  val test3Parameters = test3.getClassParameters(example)
+  val test3 = CsvInterpreter("Plants.csv", example, ",", true).loadSimple()
+  // val test3Parameters = test3.getClassParameters(example)
+  // val loaded3 = test3.load()
 
-  val loaded3 = test3.load()
-  
-  println("This should be the csv loaded")
-  for (i <- loaded3) {
-    println(i)
+  val caseClassCsv = {
+    val result: ListBuffer[Plants] = ListBuffer()
+    for (i <- test3) {
+      result += Plants(i(0), i(1).toDouble, i(2).toBoolean)
+    }
+    result.toList
   }
 
-  // case class Toolbox(numberTools: Int, status: Boolean, value: Double) extends CaseClass
-
-  // val boxClaire = Toolbox(2, false, 20.50)
-  // val boxNew = Array(3, true, 40.50)
-  // println(boxClaire)
+  for (i<- caseClassCsv) println(i)
 }

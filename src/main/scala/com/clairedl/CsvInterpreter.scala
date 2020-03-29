@@ -14,6 +14,21 @@ case class CsvInterpreter(
   /**
   * Loads csv files as a list of case class defined by the user
   */
+  def loadSimple(): List[List[String]] = {
+    Source
+      .fromFile(file)
+      .getLines()
+      .drop(headerMatch())      
+      .map { line =>
+        val split = line.split(delimiter)
+        split.toList
+      }
+    .toList
+  }
+
+      /**
+  * Loads csv files as a list of case class defined by the user
+  */
   def load(): List[Any] = {
     Source
       .fromFile(file)
