@@ -5,9 +5,8 @@ import _root_.scala.io.Source
 import scala.collection.mutable.ListBuffer
 import scala.collection.mutable
 
-case class CsvInterpreter(
+case class CsvInterpreter2(
     file: String, 
-    example: CaseClass, 
     delimiter: String = ",", 
     header: Boolean = true
     ) {
@@ -15,7 +14,7 @@ case class CsvInterpreter(
   /**
   * Base loading function
   */
-  def preload(): List[List[String]] = {
+  def load(): List[List[String]] = {
     Source
       .fromFile(file)
       .getLines()
@@ -26,30 +25,25 @@ case class CsvInterpreter(
       }
     .toList
   }  
-  
+
   /**
-  * Loads csv files as a list of strings
+  * Loads csv file as a list of user defined types
   */
-  def loadAsString2(): List[List[String]] = {
-    preload()
-  }
-  
-  def loadAsString(): List[List[String]] = {
+  def loadWithType(parameterTypes: List[String]) = {
+    val csv = load()
+    // csv.foreach(_.foreach(println(_)))
     Source
       .fromFile(file)
       .getLines()
       .drop(headerMatch())      
       .map { line =>
         val split = line.split(delimiter)
-        split.toList
+        var result = (split.zip(parameterTypes)).map { case (s, p) => setTypeField(s, p)}
+        result.toList
       }
     .toList
   }
 
-  def loadWithType(parameterTypes: List[String]): List[Map[String, String]] = {
-    ???
-  }
-  
   private def headerMatch(): Int = if (header) 1 else 0
 
   /**
@@ -81,16 +75,14 @@ case class CsvInterpreter(
   def getNames(instance: CaseClass): Array[String] = 
     instance.getClass().getDeclaredFields().map(_.getName)
 
-  def setTypeField(cell: String, finalType: Any): Any = {
-    val lowerCase = cell.toLowerCase()
-
+  def setTypeField(cell: String, finalType: String): Any = {
     finalType match {
-      case finalType: Int     => cell.toInt
-      case finalType: Double  => cell.toDouble
-      case finalType: Boolean => lowerCase.toBoolean
-      case finalType: Float   => cell.toFloat
-      case finalType: String  => s""" "$cell" """.trim()
-      case finalType: Any     => cell
+      case "Int"     => cell.toInt
+      case "Double"  => cell.toDouble
+      case "Boolean" => cell.toBoolean
+      case "Float"   => cell.toFloat
+      case "String"  => s""" "$cell" """.trim()
+      case _         => cell
     }
   }
 }

@@ -13,17 +13,20 @@ object Main extends App {
   println("Testing CSV interpreter functions")
   case class Plants(name: String, value: Double, alive: Boolean) extends CaseClass
   val example = Plants("myPlant", 2.50, true)
-  val test3 = CsvInterpreter("Plants.csv", example, ",", true).loadSimple()
-  // val test3Parameters = test3.getClassParameters(example)
-  // val loaded3 = test3.load()
-
-  val caseClassCsv = {
-    val result: ListBuffer[Plants] = ListBuffer()
-    for (i <- test3) {
-      result += Plants(i(0), i(1).toDouble, i(2).toBoolean)
+  val test3 = CsvInterpreter2("Plants.csv", ",", true)
+  val test3Loaded = test3.load()
+  println(test3Loaded)
+  
+  println("testing the type setting function")
+  val testingWithTypes = test3.loadWithType(List("String", "Double", "Boolean"))
+  println(testingWithTypes)
+  val result = testingWithTypes.foreach {
+    _ match {
+      case List(x: String, y: Double, z: Boolean) => {
+        Plants(x, y, z)
+        
+      }
     }
-    result.toList
   }
-
-  for (i<- caseClassCsv) println(i)
+  println(result)
 }
