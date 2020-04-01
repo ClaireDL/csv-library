@@ -13,4 +13,6 @@ lazy val root = (project in file("."))
     )
   )
 
+publishTo := Some(Resolver.file("CsvInterpreter.scala", new File("/Users/chdell/Programming")))
+
 // See https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html for instructions on how to publish to Sonatype.

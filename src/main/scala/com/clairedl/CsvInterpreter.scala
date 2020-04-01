@@ -2,20 +2,19 @@ package com.clairedl.scala
 
 import scala.io._
 import _root_.scala.io.Source
-import scala.collection.mutable.ListBuffer
 import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 
 case class CsvInterpreter(
     file: String, 
-    example: CaseClass, 
     delimiter: String = ",", 
     header: Boolean = true
     ) {
 
   /**
-  * Base loading function
-  */
-  def preload(): List[List[String]] = {
+    * Basic loading function
+    */
+  def load(): List[List[String]] = {
     Source
       .fromFile(file)
       .getLines()
@@ -25,72 +24,66 @@ case class CsvInterpreter(
         split.toList
       }
     .toList
-  }  
-  
-  /**
-  * Loads csv files as a list of strings
-  */
-  def loadAsString2(): List[List[String]] = {
-    preload()
   }
   
-  def loadAsString(): List[List[String]] = {
+  /**
+    * Loads csv file as a list of user defined types
+    */
+  def loadWithType(parameterTypes: List[String]): List[List[Any]] = {
     Source
       .fromFile(file)
       .getLines()
       .drop(headerMatch())      
       .map { line =>
         val split = line.split(delimiter)
-        split.toList
+        var result = (split.zip(parameterTypes)).map { case (s, p) => setTypeField(s, p)}
+        result.toList
       }
     .toList
   }
 
-  def loadWithType(parameterTypes: List[String]): List[Map[String, String]] = {
-    ???
-  }
-  
   private def headerMatch(): Int = if (header) 1 else 0
 
-  /**
-  * Returns field of csv line in the correct type
-  */
-  def generateOutputMap(parameterTypes: Array[String], row: Array[String]) = { 
-    val typeAndField = parameterTypes.zip(row).toMap
-    typeAndField.transform((key, value) => setTypeField(value, key))
-  }
+  // /**
+  //  * Returns field of csv line in the correct type
+  //  */
+  // def generateOutputMap(parameterTypes: Array[String], row: Array[String]) = { 
+  //   val typeAndField = parameterTypes.zip(row).toMap
+  //   typeAndField.transform((key, value) => setTypeField(value, key))
+  // }
+
+  // /**
+  //  * Gets name and type of case class parameters44
+  //  */
+  // def getClassParameters(instance: CaseClass) = {
+  //   val parameterNames = getNames(instance)
+  //   val parameterTypes = getTypes(instance)
+  //   parameterNames.zip(parameterTypes).toMap
+  // }
 
   /**
-  * Gets name and type of case class parameters44
-  */
-  def getClassParameters(instance: CaseClass) = {
-    val parameterNames = getNames(instance)
-    val parameterTypes = getTypes(instance)
-    parameterNames.zip(parameterTypes).toMap
-  }
-
-  /**
-  * Gets type of the case class parameters
-  */
+    * Gets type of the case class parameters
+    */
   def getTypes(instance: CaseClass): Array[String] = 
     instance.getClass().getDeclaredFields().map(_.getName)
   
-    /**
-  * Gets name of the case class parameters
-  */
+  /**
+    * Gets name of the case class parameters
+    */
   def getNames(instance: CaseClass): Array[String] = 
     instance.getClass().getDeclaredFields().map(_.getName)
 
-  def setTypeField(cell: String, finalType: Any): Any = {
-    val lowerCase = cell.toLowerCase()
-
+  /**
+    * Transforms a field into the corresponding class parameter type
+    */
+  def setTypeField(cell: String, finalType: String): Any = {
     finalType match {
-      case finalType: Int     => cell.toInt
-      case finalType: Double  => cell.toDouble
-      case finalType: Boolean => lowerCase.toBoolean
-      case finalType: Float   => cell.toFloat
-      case finalType: String  => s""" "$cell" """.trim()
-      case finalType: Any     => cell
+      case "Int"     => cell.toInt
+      case "Double"  => cell.toDouble
+      case "Boolean" => cell.toBoolean
+      case "Float"   => cell.toFloat
+      case "String"  => s""" "$cell" """.trim()
+      case _         => cell
     }
   }
 }

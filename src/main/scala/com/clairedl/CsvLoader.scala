@@ -3,6 +3,9 @@ package com.clairedl.scala
 import scala.io._
 import _root_.scala.io.Source
 
+/**
+  * Predefined case class to load a csv file as a list of Case classes
+  */
 class UserCsvLoader(file: String, header: Boolean = true, delimiter: String = ",") {
   def load(): List[Any] = {
      Source
