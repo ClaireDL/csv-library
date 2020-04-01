@@ -1,0 +1,1 @@
+Enables the user to load a csv file a list of case classes.
