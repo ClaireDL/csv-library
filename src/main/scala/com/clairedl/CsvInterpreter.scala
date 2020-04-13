@@ -5,16 +5,15 @@ import _root_.scala.io.Source
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-case class CsvInterpreter(
-    file: String, 
+class CsvReader( 
     delimiter: String = ",", 
     header: Boolean = true
-    ) {
+) {
 
   /**
     * Basic loading function
     */
-  def load(): List[List[String]] = {
+  def load(file: String): List[List[String]] = {
     Source
       .fromFile(file)
       .getLines()
@@ -25,65 +24,19 @@ case class CsvInterpreter(
       }
     .toList
   }
-  
-  /**
-    * Loads csv file as a list of user defined types
-    */
-  def loadWithType(parameterTypes: List[String]): List[List[Any]] = {
-    Source
-      .fromFile(file)
-      .getLines()
-      .drop(headerMatch())      
-      .map { line =>
-        val split = line.split(delimiter)
-        var result = (split.zip(parameterTypes)).map { case (s, p) => setTypeField(s, p)}
-        result.toList
-      }
-    .toList
+
+  def loadMultiple(files: List[String]): List[List[String]] = {
+    var result = new ListBuffer[List[List[String]]].empty
+    for (file <- files) {
+      val loadedFile = load(file)
+      result += loadedFile
+    }
+    result.toList.flatten
   }
 
   private def headerMatch(): Int = if (header) 1 else 0
 
-  // /**
-  //  * Returns field of csv line in the correct type
-  //  */
-  // def generateOutputMap(parameterTypes: Array[String], row: Array[String]) = { 
-  //   val typeAndField = parameterTypes.zip(row).toMap
-  //   typeAndField.transform((key, value) => setTypeField(value, key))
-  // }
+  // def sortBy(columnNumber: Int): List[List[String]] = {
 
-  // /**
-  //  * Gets name and type of case class parameters44
-  //  */
-  // def getClassParameters(instance: CaseClass) = {
-  //   val parameterNames = getNames(instance)
-  //   val parameterTypes = getTypes(instance)
-  //   parameterNames.zip(parameterTypes).toMap
-  // }
-
-  /**
-    * Gets type of the case class parameters
-    */
-  def getTypes(instance: CaseClass): Array[String] = 
-    instance.getClass().getDeclaredFields().map(_.getName)
-  
-  /**
-    * Gets name of the case class parameters
-    */
-  def getNames(instance: CaseClass): Array[String] = 
-    instance.getClass().getDeclaredFields().map(_.getName)
-
-  /**
-    * Transforms a field into the corresponding class parameter type
-    */
-  def setTypeField(cell: String, finalType: String): Any = {
-    finalType match {
-      case "Int"     => cell.toInt
-      case "Double"  => cell.toDouble
-      case "Boolean" => cell.toBoolean
-      case "Float"   => cell.toFloat
-      case "String"  => s""" "$cell" """.trim()
-      case _         => cell
-    }
   }
 }

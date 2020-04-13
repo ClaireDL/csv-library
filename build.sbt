@@ -10,9 +10,8 @@ lazy val root = (project in file("."))
       "org.json4s" % "json4s-native_2.11" % "3.7.0-M2",
       "com.typesafe" % "config" % "1.4.0",
       "ch.qos.logback" % "logback-classic" % "1.2.3",
-    )
+    ),
+    exportJars := true
   )
-
-publishTo := Some("Csv loader" at "https://github.com/ClaireDL")
 
 // See https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html for instructions on how to publish to Sonatype.
