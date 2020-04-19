@@ -1,4 +1,4 @@
-Name,Value,Alive
-freesia,6,false
-gerbera,3,false
-iris,3,true
+Phylum,Subphylum,Value,Alive
+freesia,alba,6,false
+Gerbera,jamesonii,3,false
+Iris,germanica,3,true
