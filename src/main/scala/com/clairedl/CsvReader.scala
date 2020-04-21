@@ -5,25 +5,41 @@ import _root_.scala.io.Source
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-object CsvReader {
+class CsvReader(file: String) {
   /**
     * Basic loading function
     */
-  def load(file: String, delimiter: String = ",", header: Boolean = true): List[List[String]] = {
+  def load(): List[List[String]] = {
     
-    def headerMatch(): Int = if (header) 1 else 0
+    // def headerMatch(): Int = if (header) 1 else 0
 
     Source
       .fromFile(file)
       .getLines()
-      .drop(headerMatch())      
+      .drop(1)      
       .map { line =>
-        val split = line.split(delimiter)
+        val split = line.split(",")
         split.toList
       }
     .toList
   }
 
+  val csv = load()
+
+  def convert(myFunc: Any) = {
+    for (line <- csv) (myFunc)
+  }
+
+  // def convert(caseClass: Any): List[Any] = {
+  //   csv.map(x => caseClass)
+  // }
+
+  // def convert(file: String, myCaseClass: List[Any]): List[Any] = {
+  //   val csv =  load(file)
+  //   val result = csv.map(x => myCaseClass)
+  //   result
+  // }
+  
   /**
     * Loads multiple files of the same format
     */
@@ -37,12 +53,4 @@ object CsvReader {
   // }
 
   def withQuotes(s: String): String = {s""" "${s}" """.trim()}
-
-  // val testMultiple = test.loadMultiple(List("Plants.csv", "Plants2.csv"))
-
-  // for (i <- testMultiple) {
-  //   garden += 
-  // }
-  // println(garden.toList)
-
 }
