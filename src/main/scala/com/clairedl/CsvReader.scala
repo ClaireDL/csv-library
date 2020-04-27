@@ -5,52 +5,34 @@ import _root_.scala.io.Source
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-class CsvReader(file: String) {
-  /**
-    * Basic loading function
-    */
-  def load(): List[List[String]] = {
-    
-    // def headerMatch(): Int = if (header) 1 else 0
 
+object CsvReader {
+  abstract class Converter {
+    def convert(line: List[String]): Any
+  }
+  
+  def loadConvert(filepath: String, converter: Converter): List[Any] = {
     Source
-      .fromFile(file)
+      .fromFile(filepath)
       .getLines()
       .drop(1)      
       .map { line =>
         val split = line.split(",")
-        split.toList
+        converter.convert(split.toList)        
       }
     .toList
   }
 
-  val csv = load()
-
-  def convert(myFunc: Any) = {
-    for (line <- csv) (myFunc)
-  }
-
-  // def convert(caseClass: Any): List[Any] = {
-  //   csv.map(x => caseClass)
+  // Solution with functional programming
+  // def loadConvert[A](filepath: String, converter: List[String] => A): List[A] = {
+  //   Source
+  //     .fromFile(filepath)
+  //     .getLines()
+  //     .drop(1)      
+  //     .map { line =>
+  //       val split = line.split(",")
+  //       converter(split.toList)        
+  //     }
+  //   .toList
   // }
-
-  // def convert(file: String, myCaseClass: List[Any]): List[Any] = {
-  //   val csv =  load(file)
-  //   val result = csv.map(x => myCaseClass)
-  //   result
-  // }
-  
-  /**
-    * Loads multiple files of the same format
-    */
-  // def loadMultiple(files: List[String]): List[List[String]] = {
-  //   var result = new ListBuffer[List[List[String]]].empty
-  //   for (file <- files) {
-  //     val loadedFile = load(file)
-  //     result += loadedFile
-  //   }
-  //   result.toList.flatten
-  // }
-
-  def withQuotes(s: String): String = {s""" "${s}" """.trim()}
 }
