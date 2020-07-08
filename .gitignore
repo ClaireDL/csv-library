@@ -6,6 +6,7 @@ target
 project/
 .idea
 main.log
+.history/
 
 test1.csv
 test2.csv

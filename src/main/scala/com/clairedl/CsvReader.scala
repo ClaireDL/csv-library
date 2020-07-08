@@ -7,18 +7,18 @@ import scala.collection.mutable.ListBuffer
 
 
 object CsvReader {
-  abstract class Converter {
-    def convert(line: List[String]): Any
+  abstract class Converter[A] {
+    def convert(line: List[String]): A
   }
-  
-  def loadConvert(filepath: String, converter: Converter): List[Any] = {
+
+  def loadConvert[A](filepath: String, converter: Converter[A]): List[A] = {
     Source
       .fromFile(filepath)
       .getLines()
-      .drop(1)      
+      .drop(1)
       .map { line =>
         val split = line.split(",")
-        converter.convert(split.toList)        
+        converter.convert(split.toList)
       }
     .toList
   }
@@ -28,10 +28,10 @@ object CsvReader {
   //   Source
   //     .fromFile(filepath)
   //     .getLines()
-  //     .drop(1)      
+  //     .drop(1)
   //     .map { line =>
   //       val split = line.split(",")
-  //       converter(split.toList)        
+  //       converter(split.toList)
   //     }
   //   .toList
   // }
