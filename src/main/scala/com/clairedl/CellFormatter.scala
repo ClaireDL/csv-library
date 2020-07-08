@@ -33,32 +33,29 @@ object CellFormatter {
       .toMap
   }
 
-  protected def whiteSpaceGenerator(cellWidth: Map[String, Int], maxWidth: Map[String, Int]) = {
-    // Generates the white spaces that are needed
-    def generateWhiteSpace(original: Map[String, Int], comparator: Map[String, Int]): Map[String, String] = {
-      // Generates n white spaces
+  // Adds white spaces to equalise cell width
+  protected def addWhiteSpace(cell: Map[String, String], maxWidth: Map[String, Int]): Map[String, String] = {
+    def whiteSpaceGenerator(): Map[String, String] = {
+      // Generates the white spaces that are needed
       def whiteSpaces(n: Int): String = (for (i <- 1 to n) yield " ").mkString
-
-      original.flatMap {
-          // Matches the columns for both tables and returns the absolute difference between the cells' width
-          case (k, v) => comparator.get(k).map(w => Map((k, whiteSpaces((v - w).abs)))).get
-        }
-    }
-
-    // Adds white spaces to equalise cell width
-    def addWhiteSpace(cell: Map[String, String]): Map[String, String] = {
-      generateWhiteSpace(getCellWidth(cell), maxWidth)
-      cell.flatMap {
-        case (k, v) => whiteSpaces.get(k).map(w => Map((k, v + w))).get
+      val cellWidth = getCellWidth(cell)
+      cellWidth.flatMap {
+        // Matches the columns for both tables and returns the absolute difference between the cells' width
+        case (k, v) => maxWidth.get(k).map(w => Map((k, whiteSpaces((v - w).abs)))).get
       }
+    }
+    val neededWhiteSpace = whiteSpaceGenerator()
+    cell.flatMap {
+      case (k, v) => neededWhiteSpace.get(k).map(w => Map((k, v + w))).get
     }
   }
 
-  def formatLines(table: List[Map[String, String]]) = {
+  def formatLines(table: List[Map[String, String]]): List[Map[String, String]] = {
     val cellWidth = getTableCellWidth(table)
-    val maxSize = maxWidth(cellWidth)
-    for (line <- table) { println(whiteSpaceGenerator(getCellWidth(line), maxSize)) }
-    // table.map(x => whiteSpaceGenerator(getCellWidth(x), maxSize))
-
+    val toMatch = maxWidth(cellWidth)
+    // for (line <- table) { addWhiteSpace(line, toMatch) }
+    table.map{
+      x => addWhiteSpace(x, toMatch)
+    }
   }
 }

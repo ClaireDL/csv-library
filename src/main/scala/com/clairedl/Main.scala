@@ -48,6 +48,6 @@ object Main extends App {
   // Working with formatter
   println("Working with formatter")
   val table = formatAsTable(herbariumTable)
-  // println(table.mkString("\n"))
-  println(table)
+  println(table.mkString("\n"))
+  // println(table)
 }
