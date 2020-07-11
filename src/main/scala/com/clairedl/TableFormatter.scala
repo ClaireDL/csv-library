@@ -15,18 +15,11 @@ object TableFormatter {
     input.map(x => converter.convert(x))
   }
 
-
-  def formatAsTable(input: List[Map[String, String]]) = {
+  def formatAsTable(input: List[Map[String, String]]): List[Map[String, String]] = {
     // Step 1: adds header
-    val header = input(0).transform((key, value) => key)
+    val header = input(0).transform((key, value) => key.toUpperCase())
     val unformattedTable = header :: input
-    // Step 2: line of "-" of total width
-
-    // Step 3: add to each cell the necessary white spaces to match max cell size
-    formatLines(unformattedTable)
-
-    // Step 5: generate table with dashed lines above/below legend and as the last line
-
-
+    // Step 2: add to each cell the necessary white spaces to match max cell size
+    formatInput(unformattedTable)
   }
 }

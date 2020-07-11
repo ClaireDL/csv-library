@@ -42,12 +42,9 @@ object Main extends App {
 
   val converter2 = new ConvertPlantToString
   val herbariumTable = convertToTable(herbarium, converter2)
-  println("This is the original list")
-  println(herbariumTable.mkString("\n"))
 
-  // Working with formatter
-  println("Working with formatter")
   val table = formatAsTable(herbariumTable)
-  println(table.mkString("\n"))
-  // println(table)
+  for (line <- table) {
+    println(line.map(x => x._2).mkString("  "))
+  }
 }
